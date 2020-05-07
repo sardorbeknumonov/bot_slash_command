@@ -74,6 +74,21 @@ def response_by_command(command, splited_text, channel):
         body = res.json()
         message = f"{body['memes'][0]['title']}\n{body['memes'][0]['url']}"
         return message
+    elif command == '/who_is':
+        userId = splited_text[0]
+        endpoint_user = f"{host}/users/{userId}"
+        res = request_to_sb('GET', endpoint_user, token=api_token)
+        body = res.json()
+        metadata = body['metadata']
+        mdata = ""
+        for key, value in metadata.items():
+            mdata += f"\n{key}:{value}"
+
+        if userId == bot_id:
+            message = f"This is me! 😎 "
+        else:
+            message = f"Nickname of {userId} is {body['nickname']}.{mdata}"
+        return message
 
 
 def send_message_to_channel(message, channel_url):
@@ -105,6 +120,9 @@ def request_to_sb(method, endpoint, data={}, token=None):
         )
         return res
 
+    elif method == 'GET':
+        res = requests.get(endpoint, headers=headers)
+        return res
     else:
         raise ValueError('Request method must be POST, GET , DELETE or PUT')
 
