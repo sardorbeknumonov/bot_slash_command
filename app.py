@@ -39,20 +39,41 @@ def post_request():
 
     if messageText.startswith("/"):
         splited_text = messageText.split(" ")
-        command = splited_text[0]
-        res = response_by_command(command, splited_text)
-        send_message_to_channel(res, channel['channel_url'])
+        command = splited_text.pop(0)
+        res = response_by_command(command, splited_text, channel)
+        if res:
+            send_message_to_channel(res, channel['channel_url'])
     return HTTP_VALID_RESPONSE
 
 
-def response_by_command(command, splited_text):
+def response_by_command(command, splited_text, channel):
     if command == '/invite_people':
-        print(command)
+        body = {
+            "user_ids": splited_text
+        }
+        endpoint_invite = host + "/group_channels/" + channel['channel_url'] + "/invite"
+        res = request_to_sb(method='POST', endpoint=endpoint_invite, data=body, token=api_token)
+        if res and res.status_code == 200:
+            peoples = ""
+            for i, userId in enumerate(splited_text):
+                if i == 0:
+                    peoples += userId
+                else:
+                    peoples += ', ' + userId
+            msg = f"{bot_id} invited {peoples} to {channel['name']}"
+            send_message_to_channel(msg, channel['channel_url'])
+
     elif command == '/coronavirus':
         req = requests.get("https://api.covid19api.com/summary")
         res = req.json()
         body = f"NewConfirmed{res['Global']['NewConfirmed']}\nTotalConfirmed: {res['Global']['TotalConfirmed']}\nNewDeaths: {res['Global']['NewDeaths']}\nTotalDeaths {res['Global']['TotalDeaths']}"
         return body
+    elif command == '/meme':
+        endpoint_meme = "https://meme-api.herokuapp.com/gimme/1"
+        res = requests.get(endpoint_meme)
+        body = res.json()
+        message = f"{body['memes'][0]['title']}\n{body['memes'][0]['url']}"
+        return message
 
 
 def send_message_to_channel(message, channel_url):
@@ -82,7 +103,8 @@ def request_to_sb(method, endpoint, data={}, token=None):
             data=json.dumps(data),
             headers=headers
         )
-        
+        return res
+
     else:
         raise ValueError('Request method must be POST, GET , DELETE or PUT')
 
