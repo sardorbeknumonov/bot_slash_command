@@ -82,6 +82,7 @@ def request_to_sb(method, endpoint, data={}, token=None):
             data=json.dumps(data),
             headers=headers
         )
+        
     else:
         raise ValueError('Request method must be POST, GET , DELETE or PUT')
 
