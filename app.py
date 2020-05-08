@@ -4,9 +4,9 @@ from flask import Flask, request
 
 import requests
 
-host = "https://api-{application_id}.sendbird.com/v3"
+host = "https://api-88CA8C74-5A5F-4A67-ABCA-C23D24C33C37.sendbird.com/v3"
 bot_id = "info_bot"
-api_token = "{api-token}"
+api_token = "3e4bb5be554433a29fb8cced3a38b74aae39f85f"
 app = Flask(__name__)
 
 REQUEST_CATEGORY = 'category'
@@ -50,6 +50,7 @@ def post_request():
 
 
 def response_by_command(command, splited_text, channel):
+
     if command == '/invite_people':
         body = {
             "user_ids": splited_text
