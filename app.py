@@ -50,7 +50,6 @@ def post_request():
 
 
 def response_by_command(command, splited_text, channel):
-
     if command == '/invite_people':
         body = {
             "user_ids": splited_text
@@ -64,7 +63,7 @@ def response_by_command(command, splited_text, channel):
                     peoples += userId
                 else:
                     peoples += ', ' + userId
-            msg = f"{bot_id} invited {peoples} to {channel['name']}"
+            msg = f"{bot_id} invited {peoples} to {channel['name']} channel"
             send_message_to_channel(msg, channel['channel_url'])
 
     elif command == '/coronavirus':
@@ -97,6 +96,22 @@ def response_by_command(command, splited_text, channel):
         elif res.status_code == 400:
             message = "User not founded"
         return message
+    elif command == '/show_members':
+        endpoint_channel = f"{host}/group_channels/{channel['channel_url']}/members"
+        res = request_to_sb('GET', endpoint_channel, token=api_token)
+        if res.status_code == 200:
+            body = res.json()
+            members = body['members']
+            message = ""
+            for i, member in enumerate(members):
+                if i == 0:
+                    message += f"{member['user_id']} -- {member['nickname']}"
+                else:
+                    message += f"\n{member['user_id']} -- {member['nickname']}"
+            return message
+        else:
+            message = "Members not found"
+            return message
 
 
 def send_message_to_channel(message, channel_url):
