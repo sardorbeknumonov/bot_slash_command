@@ -112,6 +112,9 @@ def response_by_command(command, splited_text, channel):
         else:
             message = "Members not found"
             return message
+    else:
+        message = f"Sorry, I don't have {command} command yet!"
+        return message
 
 
 def send_message_to_channel(message, channel_url):
