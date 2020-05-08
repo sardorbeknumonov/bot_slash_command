@@ -1,7 +1,6 @@
 import json
 
 from flask import Flask, request
-from logger import Logger
 
 import requests
 
@@ -28,25 +27,31 @@ def get_request():
     return "Hello World!"
 
 
+# message event handler which receive a message from sendbird
 @app.route('/', methods=['POST'])
 def post_request():
     requested_params = request.get_json()
-    logger.request(json.dumps(requested_params))
     category = requested_params[REQUEST_CATEGORY]
     channel = requested_params["channel"]
     message = requested_params['message']
     messageText = str(message['text'])
-
+    # check message start with `/`
     if messageText.startswith("/"):
+        # split message with space. because user put space after slash command
         splited_text = messageText.split(" ")
+        # exract command from splitted text
         command = splited_text.pop(0)
+        # run response by command func
         res = response_by_command(command, splited_text, channel)
         if res:
             send_message_to_channel(res, channel['channel_url'])
+    elif messageText.__contains__('/'):
+        print()
     return HTTP_VALID_RESPONSE
 
 
 def response_by_command(command, splited_text, channel):
+    
     if command == '/invite_people':
         body = {
             "user_ids": splited_text
@@ -78,16 +83,20 @@ def response_by_command(command, splited_text, channel):
         userId = splited_text[0]
         endpoint_user = f"{host}/users/{userId}"
         res = request_to_sb('GET', endpoint_user, token=api_token)
-        body = res.json()
-        metadata = body['metadata']
-        mdata = ""
-        for key, value in metadata.items():
-            mdata += f"\n{key}:{value}"
+        message = ""
+        if res.status_code == 200:
+            body = res.json()
+            metadata = body['metadata']
+            mdata = ""
+            for key, value in metadata.items():
+                mdata += f"\n{key}:{value}"
 
-        if userId == bot_id:
-            message = f"This is me! 😎 "
-        else:
-            message = f"Nickname of {userId} is {body['nickname']}.{mdata}"
+            if userId == bot_id:
+                message = f"This is me! 😎 "
+            else:
+                message = f"Nickname of {userId} is {body['nickname']}.{mdata}"
+        elif res.status_code == 400:
+            message = "User not founded"
         return message
 
 
