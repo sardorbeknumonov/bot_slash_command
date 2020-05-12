@@ -69,7 +69,7 @@ def response_by_command(command, splited_text, channel):
     elif command == '/coronavirus':
         req = requests.get("https://api.covid19api.com/summary")
         res = req.json()
-        body = f"NewConfirmed{res['Global']['NewConfirmed']}\nTotalConfirmed: {res['Global']['TotalConfirmed']}\nNewDeaths: {res['Global']['NewDeaths']}\nTotalDeaths {res['Global']['TotalDeaths']}"
+        body = f"NewConfirmed: {int(res['Global']['NewConfirmed'])}\nTotalConfirmed: {int(res['Global']['TotalConfirmed'])}\nNewDeaths: {int(res['Global']['NewDeaths'])}\nTotalDeaths {int(res['Global']['TotalDeaths'])}"
         return body
     elif command == '/meme':
         endpoint_meme = "https://meme-api.herokuapp.com/gimme/1"
