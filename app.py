@@ -1,6 +1,13 @@
 from flask import Flask
+from route import api
 
-app = Flask(__name__)
+application = Flask(__name__)
+application.debug = True
 
+application.register_blueprint(api)
 if __name__ == '__main__':
-    app.run(host='0.0.0.0')
+    try:
+        application.run(host='0.0.0.0')
+    except IndexError:
+        print('Wrong run command.\n')
+        print('python app.py <API_HOST> <APP_TOKEN> <BOT_ID>')

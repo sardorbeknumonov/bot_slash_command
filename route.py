@@ -5,7 +5,7 @@ from config import host, api_token
 
 from message_function import send_message_to_channel, request_to_sb
 
-app = Blueprint('bot_api', __name__)
+api = Blueprint('bot_api', __name__)
 
 REQUEST_CATEGORY = 'category'
 CAT_MESSAGE_NOTIFICATION = 'bot_message_notification'
@@ -19,13 +19,13 @@ PARAM_MESSAGE_TEXT = 'text'
 HTTP_VALID_RESPONSE = json.dumps({'success': True}), 200, {'ContentType': 'application/json'}
 
 
-@app.route('/')
+@api.route('/')
 def get_request():
     return "Hello World!"
 
 
 # message event handler which receive a message from sendbird
-@app.route('/', methods=['POST'])
+@api.route('/', methods=['POST'])
 def post_request():
     requested_params = request.get_json()
     category = requested_params[REQUEST_CATEGORY]
