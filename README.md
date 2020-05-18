@@ -1,8 +1,8 @@
-###SendBird Slash Command Bot Example
+### SendBird Slash Command Bot Example
 This is a a basic chat bot written to integration with SendBird's Bot Interface  (https://docs.sendbird.com/platform/bot_interface)
-###What do this bot do?
+### What do this bot do?
 The bot will respond depending on the slash command which user requested in a group channel.
-###What functions did this application use from the Bot Interface API?
+### What functions did this application use from the Bot Interface API?
 - [Receiving messages from the channel](https://docs.sendbird.com/platform/bot_interface#2_bot_interface)
 - [Sending messages to the channel](https://docs.sendbird.com/platform/bot_interface#3_send_message_from_bot)
 ### Tutorial / How to Run
@@ -43,7 +43,7 @@ Install Flask and Gunicorn:
 
 <code>pip install gunicorn flask</code>
 
-##Configuring Gunicorn
+## Configuring Gunicorn
 
 Create a unit file ending in .service within the /etc/systemd/system directory to begin:
 
